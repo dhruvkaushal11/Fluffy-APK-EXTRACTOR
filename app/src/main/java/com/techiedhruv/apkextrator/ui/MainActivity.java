@@ -1,6 +1,7 @@
 package com.techiedhruv.apkextrator.ui;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -59,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAppRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerAdapterApps = new RecyclerAdapterApps(this, mAppList);
         mAppRecycler.setAdapter(mRecyclerAdapterApps);
-
-        listApps();
+        new AsyncCaller().execute();
 
     }
 
@@ -88,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        mRecyclerAdapterApps.notifyDataSetChanged();
     }
 
     void showTutorial() {
@@ -202,6 +202,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 "Hey check out this app at: https://play.google.com/store/apps/details?id=" + getPackageName());
         sendIntent.setType("text/plain");
         startActivity(sendIntent);
+
+    }
+    public void donate(View v) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.jiitconnect.com/pcconnect/paypal1.html"));
+        startActivity(browserIntent);
+
+    }
+
+    private class AsyncCaller extends AsyncTask<Void, Void, Void> {
+        ProgressDialog pdLoading = new ProgressDialog(MainActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            //this method will be running on UI thread
+            pdLoading.setMessage("\tLoading...");
+            pdLoading.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            //this method will be running on background thread so don't update UI frome here
+            //do your long running http tasks here,you dont want to pass argument and u can access the parent class' variable url over here
+            listApps();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            //this method will be running on UI thread
+            mRecyclerAdapterApps.notifyDataSetChanged();
+
+            pdLoading.dismiss();
+        }
 
     }
 }

@@ -45,6 +45,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/app_recycler"
         android:layout_width="match_parent"
+        android:paddingBottom="100dp"
+        android:clipToPadding="false"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"></android.support.v7.widget.RecyclerView>
 

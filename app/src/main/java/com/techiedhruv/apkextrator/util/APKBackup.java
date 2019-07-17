@@ -1,7 +1,12 @@
 package com.techiedhruv.apkextrator.util;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -44,7 +49,7 @@ public class APKBackup {
         }
     }
 
-    public void extractapk(String packagename) {
+    public void extractapk(final String packagename) {
         Log.d(TAG, "APK BACKUP STARTED FOR APP" + packagename);
         PackageManager packageManager = context.getPackageManager();
         try {
@@ -73,6 +78,20 @@ public class APKBackup {
             e.printStackTrace();
         }
         Toast.makeText(context, "APK EXTRACTED!", Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(context)
+                .setTitle("APK Extracted")
+                .setMessage("You can find APK File in APK_EXTRACTOR directory of your file manager!")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue with delete operation
+                        dialog.dismiss();
+                    }
+                })
+                .setIcon(android.R.drawable.checkbox_on_background)
+                .show();
     }
 
 
